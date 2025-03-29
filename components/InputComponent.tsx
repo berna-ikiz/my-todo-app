@@ -16,11 +16,12 @@ const InputComponent = ({ placeholder, value , onChangeText}: Props) => {
 
 const styles = StyleSheet.create({
   input: {
-    borderWidth: 4,
-    borderRadius: 8,
+    borderWidth: 3,
+    borderRadius: 10,
+    borderColor: "gray",
     paddingVertical: 4,
     paddingHorizontal: 8,
-    fontSize: 18,
+    fontSize: 24,
   },
 });
 
