@@ -2,14 +2,21 @@ import InputComponent from "@/components/InputComponent";
 import MyButton from "@/components/MyButton";
 import TodoList from "@/components/TodoList";
 import React, { useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { Alert, StyleSheet, View } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import MyTodoModal from "@/components/MyTodoModal";
 
 const KEY_TODO_LIST = "todos";
 const KEY_CURRENT_TODO = "current_todo";
 const index = () => {
-  const [todoList, setTodoList] = useState<string[]>([]);
+  const [todoList, setTodoList] = useState<{ key: string; text: string }[]>([]);
   const [todo, setTodo] = useState("");
+  const [modalVisible, setModalVisible] = useState(false);
+  const [editingTodoItem, setEditingTodoItem] = useState<{
+    key: string;
+    text: string;
+  } | null>(null);
+  const [editedText, setEditedText] = useState("");
 
   useEffect(() => {
     async function getTodos() {
@@ -28,22 +35,48 @@ const index = () => {
     getCurrentTodo();
   }, []);
 
-  const saveTodosToStorage = async (newList: string[]) => {
+  const saveTodosToStorage = async (
+    newList: { key: string; text: string }[]
+  ) => {
     const jsonValue = JSON.stringify(newList);
     await AsyncStorage.setItem(KEY_TODO_LIST, jsonValue);
   };
 
   const handlePressed = () => {
-    const newList = [...todoList, todo];
+    if (!todo) return Alert.alert("", "Add something!");
+    const newTodo = { key: Date.now().toString(), text: todo };
+    const newList = [...todoList, newTodo];
+
     setTodoList(newList);
     setTodo("");
     saveTodosToStorage(newList);
   };
 
-  const handleDelete = (deletedTodo: String) => {
-    const newList = todoList.filter((todo) => todo !== deletedTodo);
+  const handleDelete = (key: String) => {
+    const newList = todoList.filter((todo) => todo.key !== key);
     setTodoList(newList);
     saveTodosToStorage(newList);
+  };
+
+  const handleEdit = (item: { key: string; text: string }) => {
+    setEditingTodoItem(item);
+    setEditedText(item.text);
+    setModalVisible(true);
+  };
+
+  const handleSaveEdit = (newText: string) => {
+    if (editingTodoItem) {
+      const newList = todoList.map((item) =>
+        item.key === editingTodoItem.key ? { ...item, text: newText } : item
+      );
+      setTodoList(newList);
+      saveTodosToStorage(newList);
+      setModalVisible(false);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setModalVisible(false);
   };
 
   const handleSetTodo = async (text: string) => {
@@ -59,7 +92,17 @@ const index = () => {
         placeholder="To do"
       />
       <MyButton text="Add" onPress={() => handlePressed()} />
-      <TodoList onDelete={handleDelete} todoList={todoList} />
+      <TodoList
+        onDelete={handleDelete}
+        onEdit={handleEdit}
+        todoList={todoList}
+      />
+      <MyTodoModal
+        modalVisible={modalVisible}
+        onClose={handleCloseModal}
+        onSave={handleSaveEdit}
+        currentText={editingTodoItem}
+      />
     </View>
   );
 };
