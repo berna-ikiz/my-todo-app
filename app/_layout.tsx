@@ -30,7 +30,7 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
-        <Stack.Screen name="index" options={{ headerTitle:"Todo App", headerShown: true }} />
+        <Stack.Screen name="index" options={{ headerTitle:"Todo App!", headerShown: true }} />
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>

@@ -4,12 +4,18 @@ import React from "react";
 type Props = {
   placeholder?: string;
   value?: string;
-  onChangeText?: (text: string) =>void;
- };
-const InputComponent = ({ placeholder, value , onChangeText}: Props) => {
+  onChangeText?: (text: string) => void;
+};
+const InputComponent = ({ placeholder, value, onChangeText }: Props) => {
   return (
     <View>
-      <TextInput value = {value} onChangeText={onChangeText} placeholder={placeholder} style={styles.input} />
+      <TextInput
+        value={value}
+        onChangeText={onChangeText}
+        placeholder={placeholder}
+        style={styles.input}
+        autoComplete="off"
+      />
     </View>
   );
 };
