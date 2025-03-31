@@ -7,6 +7,8 @@ import {
 } from "react-native";
 import React from "react";
 import { isSmallDevice } from "@/constants/screenSize";
+import {useTheme } from "@/context/ThemeContext";
+
 
 type Props = {
   placeholder?: string;
@@ -14,6 +16,7 @@ type Props = {
   onChangeText?: (text: string) => void;
 };
 const InputComponent = ({ placeholder, value, onChangeText }: Props) => {
+  const themeColors = useTheme(); 
   const { width } = useWindowDimensions();
   return (
     <View>
@@ -26,6 +29,8 @@ const InputComponent = ({ placeholder, value, onChangeText }: Props) => {
           {
             borderWidth: isSmallDevice(width) ? 2 : 4,
             fontSize: isSmallDevice(width) ? 16 : 24,
+            borderColor:themeColors.border,
+            color:themeColors.text
           },
         ]}
         autoComplete="off"
@@ -37,7 +42,6 @@ const InputComponent = ({ placeholder, value, onChangeText }: Props) => {
 const styles = StyleSheet.create({
   input: {
     borderRadius: 10,
-    borderColor: "gray",
     paddingVertical: 4,
     paddingHorizontal: 8,
   },

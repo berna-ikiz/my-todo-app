@@ -1,6 +1,7 @@
 import { View, Text, TouchableOpacity, StyleSheet, useWindowDimensions } from "react-native";
 import React from "react";
 import { isSmallDevice } from "@/constants/screenSize";
+import {useTheme } from "@/context/ThemeContext";
 type Props = {
   variant?: "primary" | "secondary" | "destructive" | "success";
   text?: string;
@@ -8,25 +9,25 @@ type Props = {
 };
 
 const MyButton = ({ text, onPress, variant = "primary" }: Props) => {
-
+ const themeColors = useTheme(); 
   let backgroundColor = "lightblue";
   const{width,height} = useWindowDimensions();
 
   switch (variant) {
     case "primary":
-      backgroundColor = "lightblue";
+      backgroundColor = themeColors.primary; 
       break;
     case "secondary":
-      backgroundColor = "lightgreen";
+      backgroundColor = themeColors.secondary; 
       break;
     case "destructive":
-      backgroundColor = "lightpink";
+      backgroundColor = themeColors.destructive; 
       break;
     case "success":
-      backgroundColor = "lightyellow";
+      backgroundColor = themeColors.success; 
       break;
     default:
-      backgroundColor = "lightblue";
+      backgroundColor = themeColors.primary
   }
 
   return (
@@ -37,10 +38,10 @@ const MyButton = ({ text, onPress, variant = "primary" }: Props) => {
 };
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "lightblue",
+    flexDirection:"row",
+    alignSelf: "stretch",
     paddingHorizontal: 32,
     paddingVertical: 4,
-    alignSelf: "flex-start",
     borderRadius: 8,
   },
   text: {

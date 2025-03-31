@@ -5,8 +5,11 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  useWindowDimensions,
   View,
 } from "react-native";
+import { useTheme } from "@/context/ThemeContext";
+import { isSmallDevice } from "@/constants/screenSize";
 
 type Props = {
   modalVisible: boolean;
@@ -21,6 +24,8 @@ const MyTodoModal = ({ modalVisible, onClose, onSave, currentText }: Props) => {
     onSave(text || "");
     setText("");
   };
+  const { width } = useWindowDimensions();
+  const themeColors = useTheme();
 
   useEffect(() => {
     if (currentText) {
@@ -30,15 +35,44 @@ const MyTodoModal = ({ modalVisible, onClose, onSave, currentText }: Props) => {
 
   return (
     <Modal visible={modalVisible} animationType="slide" transparent>
-      <View style={styles.modalContainer}>
-        <View style={styles.modalContent}>
-          <TextInput style={styles.input} value={text} onChangeText={setText} />
+      <View
+        style={[
+          styles.modalContainer,
+          { backgroundColor: themeColors.background },
+        ]}
+      >
+        <View
+          style={[
+            styles.modalContent,
+            { backgroundColor: themeColors.modalContentColor },
+          ]}
+        >
+          <TextInput
+            style={[
+              styles.input,
+              { borderColor: themeColors.border, color: themeColors.text, fontSize: isSmallDevice(width) ? 16 : 24 },
+            ]}
+            value={text}
+            onChangeText={setText}
+          />
           <View style={styles.buttonContainer}>
-            <TouchableOpacity onPress={handleSave} style={styles.button}>
-              <Text>Save</Text>
+            <TouchableOpacity
+              onPress={handleSave}
+              style={[
+                styles.button,
+                { backgroundColor: themeColors.primary},
+              ]}
+            >
+              <Text style={{ color: themeColors.text , fontSize: isSmallDevice(width) ? 16 : 24,}}>Save</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={onClose} style={styles.button}>
-              <Text>Close</Text>
+            <TouchableOpacity
+              onPress={onClose}
+              style={[
+                styles.button,
+                { backgroundColor: themeColors.secondary},
+              ]}
+            >
+              <Text style={{ color: themeColors.text , fontSize: isSmallDevice(width) ? 16 : 24,}}>Close</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -54,10 +88,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "gray",
   },
   modalContent: {
-    backgroundColor: "white",
     padding: 20,
     borderRadius: 8,
     width: "80%",
@@ -67,7 +99,6 @@ const styles = StyleSheet.create({
     width: "100%",
     borderWidth: 1,
     borderRadius: 10,
-    borderColor:"gray",
     marginBottom: 10,
   },
   buttonContainer: {
@@ -77,7 +108,6 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   button: {
-    backgroundColor: "lightblue",
     paddingHorizontal: 32,
     paddingVertical: 4,
     borderRadius: 8,
